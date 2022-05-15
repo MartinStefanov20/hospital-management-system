@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="~{/fragments/head}"></th:block>
+</head>
+
+<body>
+
+<header id="header" class="fixed-top">
+    <th:block th:include="~{/fragments/doctors-nav}"></th:block>
+</header><!-- End Header -->
+
+<section id="appointment" class="appointment section-bg">
+    <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+            <div class="move"></div>
+
+            <h2>Prescription Form</h2>
+            <br>
+            <h4>Please note that the prescription will be assigned to the same patient whose appointment is in a process
+                of archiving</h4>
+        </div>
+
+        <form method="POST" th:action="@{/doctor/editPrescription}" th:method="POST" role="form"
+              class="login-form" data-aos="fade-up"
+              data-aos-delay="100">
+
+            <div class="form-row">
+                <div class="col-md-4 form-group" , style="float: none; margin: 0 auto;">
+                    <h6>Prescription Id</h6>
+                    <br>
+                    <input name="prescriptionId" class="form-control" th:value="${id}" readonly>
+                    <br>
+                    <h6>Patient Name</h6>
+                    <br>
+                    <input class="form-control" th:value="${patient}" readonly>
+                    <br>
+                    <h6>Prescription Notes</h6>
+                    <br>
+                    <textarea class="form-control" name="notes" rows="5"
+                    th:text="${prescription.getPrescriptionNotes()}"></textarea>
+                    <div class="validate"></div>
+                </div>
+            </div>
+
+
+            <div class="text-center">
+                <button name="submit" type="submit" value="submit">Confirm Changes</button>
+            </div>
+        </form>
+        <div style="padding-bottom: 50px"></div>
+        <form method="GET" th:action="@{/doctor/prescriptions/(id = *{prescription.prescribedBy.getId()})}">
+            <button class="logout-button">Back to Prescriptions</button>
+        </form>
+    </div>
+
+    <div class="move-footer">
+
+    </div>
+</section>
+
+<footer id="footer">
+    <th:block th:include="~{/fragments/footer}"></th:block>
+</footer><!-- End Footer -->
+
+<th:block th:include="~{/fragments/scripts}"></th:block>
+</body>

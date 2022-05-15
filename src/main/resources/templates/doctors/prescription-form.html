@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="~{/fragments/head}"></th:block>
+</head>
+
+<body>
+
+<header id="header" class="fixed-top">
+    <th:block th:include="~{/fragments/doctors-nav}"></th:block>
+</header><!-- End Header -->
+
+<section id="appointment" class="appointment section-bg">
+    <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+            <div class="move"></div>
+
+            <h2>Prescription Form</h2>
+            <br>
+            <h4>Please note that the prescription will be assigned to the same patient whose appointment is in a process of archiving</h4>
+        </div>
+
+        <form method="POST" th:action="@{/doctor/issuePrescription}" th:method="POST" role="form"
+              class="login-form" data-aos="fade-up"
+              data-aos-delay="100">
+
+            <div class="form-row">
+                <div class="col-md-4 form-group" , style="float: none; margin: 0 auto;">
+                    <h6>Appointment Id</h6>
+                    <br>
+                    <input name="appointmentId" class="form-control" th:value="${appointmentId}" readonly>
+                    <br>
+                    <h6>Patient Id</h6>
+                    <br>
+                    <input name="patientId" class="form-control" th:value="${patientId}" readonly>
+                    <br>
+                    <h6>Patient Name</h6>
+                    <br>
+                    <input class="form-control" th:value="${nameOfUser}" readonly>
+                    <br>
+                    <h6>Prescription Notes</h6>
+                    <br>
+                    <textarea class="form-control" name="notes" rows="5" placeholder="Prescription Notes"></textarea>                    <div class="validate"></div>
+                </div>
+            </div>
+
+
+
+            <div class="text-center"><button name="submit" type="submit" value="submit" >Confirm Appointment</button></div>
+        </form>
+    </div>
+
+    <div class="move-footer">
+
+    </div>
+</section>
+
+<footer id="footer">
+    <th:block th:include="~{/fragments/footer}"></th:block>
+</footer><!-- End Footer -->
+
+<th:block th:include="~{/fragments/scripts}"></th:block>
+</body>

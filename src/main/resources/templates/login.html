@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="~{/fragments/head}"> </th:block>
+</head>
+
+<body>
+
+    <header id="header" class="fixed-top">
+        <th:block th:include="~{/fragments/guest-nav-login}"> </th:block>
+    </header>
+    
+
+    <section id="appointment" class="appointment section-bg">
+        <div class="container" data-aos="fade-up">
+            
+            <div class="section-title">
+                <div class="move-sign-in"></div>
+                <h2>Sign In</h2>
+                <p>Please enter your login e-mail address and password</p>
+                <br>
+
+            </div>
+
+            <form th:action="@{/users/login}" th:method="post" role="form" class="login-form" data-aos="fade-up"
+                  data-aos-delay="100">
+
+                <div th:if="${loginError}" class="center-block alert alert-danger" role="alert">
+                    <p class="text-center">Incorrect username or password</p>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-4 form-group" , style="float: none; margin: 0 auto;">
+                        <input th:value="${username}" type="text"  class="form-control" name="username" placeholder="Your Username"
+                               required>
+                        <div class="validate"></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-4 form-group" style="float: none; margin: 0 auto;">
+                        <input type="password" name="password" class="form-control" id="password"
+                            placeholder="Password" data-rule="minlen:4"
+                            data-msg="Password must contain at least 4 characters">
+                        <div class="validate"></div>
+                    </div>
+                </div>
+
+                <div class="text-center"><button name="submit" type="submit" value="submit" >Sign In</button></div>
+            </form>
+
+        </div>
+    </section>
+    <footer id="footer">
+        <th:block th:include="~{/fragments/footer}"> </th:block>
+    </footer>
+
+    <th:block th:include="~{/fragments/scripts}"> </th:block>
+</body>

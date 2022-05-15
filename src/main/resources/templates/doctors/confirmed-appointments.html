@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="~{/fragments/head}"></th:block>
+</head>
+
+<body>
+
+<header id="header" class="fixed-top">
+    <th:block th:include="~{/fragments/doctors-nav}"> </th:block>
+</header><!-- End Header -->
+
+<!-- ======= Featured Services Section ======= -->
+<div class="move"></div>
+<section id="featured-services" class="featured-services">
+    <div class="container" data-aos="fade-up">
+
+
+        <div class="section-title">
+            <div class="move-options"></div>
+
+            <h2>Your Confirmed Appointments</h2>
+        </div>
+        <ul>
+            <li>
+                <div class="row" th:each="i : ${appointments}" th:object="${i}">
+                    <div class="col-md-4 col-lg-12 d-flex align-items-stretch mb-5 mb-lg-0">
+                        <div class="icon-box col-lg-12" data-aos="fade-up" data-aos-delay="100">
+                            <div class="col-md-4 col-lg-12 d-flex align-items-stretch mb-5 mb-lg-0 col-form-label">
+                                <a class="col-lg-10" th:text="('Appointment id: ' +  *{getId()} + '   |   Scheduled for: ' + *{getAppointmentTime()} +' | Patient: ' + *{getPatient().getFirstName()} + ' ' + *{getPatient().getLastName()})">
+                                    Date: 21.07.2017 | Doctor: dr. Petter Griffin | Status: Requested
+                                </a>
+                            </div>
+
+                            <div class="col-md-4 col-lg-10">
+                            <a class="col-lg-4 w3-button w3-round w3-border w3-small" th:href="@{/doctor/archiveAppointment(id = *{getId()})}"><b>Archive appointment</b></a>
+
+                            <a class="col-lg-6 w3-button w3-round w3-border w3-small" th:href="@{/doctor/issuePrescription(appointmentId = *{getId()}, patientId = *{getPatient().getId()})}"><b>Archive appointment and issue a prescription</b></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="move-options"></div>
+
+            </li>
+        </ul>
+        <form method="GET" th:action="@{/doctor/appointments}">
+            <button class="logout-button">Back To Appointments</button>
+        </form>
+
+    </div>
+    <div class="push-down-footer"></div>
+</section><!-- End Featured Services Section -->
+
+<footer id="footer">
+    <th:block th:include="~{/fragments/footer}"></th:block>
+</footer><!-- End Footer -->
+
+<th:block th:include="~{/fragments/scripts}"></th:block>
+</body>

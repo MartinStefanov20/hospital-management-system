@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="~{/fragments/head}"> </th:block>
+</head>
+
+<body>
+
+<header id="header" class="fixed-top">
+    <th:block th:include="~{/fragments/admin-nav}"> </th:block>
+</header><!-- End Header -->
+
+<!-- ======= Featured Services Section ======= -->
+<div class="move"></div>
+<section id="featured-services" class="featured-services">
+    <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+            <div class="move"></div>
+
+            <h2 th:text="('Please select roles for user '+  *{username})"></h2>
+        </div>
+
+        <form th:action="@{/admin/role-manager}" th:method="POST" role="form" class="login-form" data-aos="fade-up"
+              data-aos-delay="100">
+
+            <div class="center-block alert alert-danger" role="alert" th:if="*{roleIssue}">
+                <p class="text-center" >
+                    Please note that a user can not have a patient and a doctor role at the same time without having admin rights!
+                </p>
+
+            </div>
+            <div class="form-row">
+
+                <div class="col-md-12 form-group">
+                    <input type="hidden" name="username" th:value="*{username}" readonly>
+                    <h4>Patient</h4>
+                    <input type="checkbox" name = "patient" th:checked="${patient}">
+                    <h4>Doctor</h4>
+                    <input type="checkbox" name = "doctor" th:checked="${doctor}">
+                    <h4>Admin</h4>
+                    <input type="checkbox" name = "admin" th:checked="${admin}">
+                    <div class="validate"></div>
+                </div>
+            </div>
+            <div class="mb-3">
+            </div>
+            <div class="text-center">
+                <button type="submit">Save Changes</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="move-footer">
+
+    </div>
+</section><!-- End Featured Services Section -->
+
+<footer id="footer">
+    <th:block th:include="~{/fragments/footer}"> </th:block>
+</footer><!-- End Footer -->
+
+<th:block th:include="~{/fragments/scripts}"> </th:block>
+</body>

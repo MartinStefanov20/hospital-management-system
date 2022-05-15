@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="~{/fragments/head}"> </th:block>
+</head>
+
+<body>
+
+<header id="header" class="fixed-top">
+    <th:block th:include="~{/fragments/doctors-nav}"> </th:block>
+</header><!-- End Header -->
+
+
+<!-- ======= Featured Services Section ======= -->
+<div class="move"></div>
+<section id="featured-services" class="featured-services">
+    <div class="container" data-aos="fade-up" th:object="${prescription}">
+
+
+        <div class="section-title">
+            <div class="move-options"></div>
+
+            <h2 th:text="'Prescription ID: ' + *{getId()}">Prescription ID: 1244</h2>
+        </div>
+        <ul>
+            <li>
+                <div class="row">
+                    <div class="col-md-4 col-lg-12 d-flex align-items-stretch mb-5 mb-lg-0">
+                        <div class="icon-box col-lg-12" data-aos="fade-up" data-aos-delay="100">
+                            <h4 th:text="'Prescribed To: ' + *{getPrescribeTo().getSalutation()} + ' ' + *{getPrescribeTo().getFirstName()} + ' ' + *{getPrescribeTo().getLastName()}">Prescribe By: dr. Petter Griffin</h4>
+                            <h4 th:text="'Prescription date: ' + *{getDate()}">Prescription date: 21.07.2017</h4>
+                            </br>
+                            <h4>Notes:</h4>
+                            <p th:text="*{getPrescriptionNotes()}">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores ipsam dolore quae aspernatur id? Minus aperiam enim vitae, consectetur alias amet, soluta voluptates atque doloremque reprehenderit consequuntur sint aut vel.
+                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odit rem cupiditate, placeat consectetur ullam, ab accusantium ducimus recusandae, pariatur non soluta est eligendi dolore enim aspernatur quidem maiores libero assumenda.
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius minus facilis impedit sequi dolor voluptatum in reiciendis nesciunt officia molestiae, libero reprehenderit fuga a veniam distinctio quas? Ipsam, id culpa.
+                                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ea similique tenetur reprehenderit temporibus, harum architecto minus est laboriosam voluptatibus dolore, recusandae soluta error necessitatibus quia doloribus eligendi numquam quisquam earum.
+                            </p>
+
+                            <a class="w3-button w3-round w3-border w3-small" th:href="@{/doctor/editPrescription(id = *{getId()})}"><b>Edit prescription</b></a>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="move-options"></div>
+                <form method="GET" th:action="@{/doctor/prescriptions/(id = *{prescribedBy.id})}">
+                    <button class="logout-button">Back to Prescriptions</button>
+                </form>
+            </li>
+        </ul>
+
+
+
+</section><!-- End Featured Services Section -->
+
+<footer id="footer">
+    <th:block th:include="~{/fragments/footer}"></th:block>
+</footer><!-- End Footer -->
+
+<th:block th:include="~{/fragments/scripts}"></th:block>
+</body>

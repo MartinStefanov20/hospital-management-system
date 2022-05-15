@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <th:block th:include="~{/fragments/head}"> </th:block>
+</head>
+
+<body>
+
+<header id="header" class="fixed-top">
+  <th:block th:include="~{/fragments/user-nav}"> </th:block>
+</header>
+
+<div class="move"></div>
+<section id="featured-services" class="featured-services">
+  <div class="container" data-aos="fade-up">
+
+    <h3 class="home-welcome-message" th:text="${greeting}"></h3>
+
+    <div class="row">
+      <div class="col-md-6 col-lg-6 d-flex align-items-stretch mb-5 mb-lg-0">
+        <div class="icon-box" data-aos="fade-up" data-aos-delay="100">
+          <div class="icon"><a href="/appointments"><i class="icofont-calendar"></i></a></div>
+          <h4 class="title"><a href="/appointments">Appointments</a></h4>
+          <p class="description">Here you can keep track of your appointments that you made and their statuses</p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-6 d-flex align-items-stretch mb-5 mb-lg-0">
+        <div class="icon-box" data-aos="fade-up" data-aos-delay="300">
+          <div class="icon"><a href="/prescriptions"><i class="icofont-law-document"></i></a></div>
+          <h4 class="title"><a href="/prescriptions">Prescriptions</a></h4>
+          <p class="description">You lost your perscription? Forget about any similar inconveniences, you
+            have access to every single perscription that was issued after visiting one of our
+            specialists.</p>
+        </div>
+      </div>
+    </div>
+    <div class="move-options"></div>
+    <div class="row">
+      <div class="col-md-6 col-lg-6 d-flex align-items-stretch mb-5 mb-lg-0">
+        <div class="icon-box" data-aos="fade-up" data-aos-delay="100">
+          <div class="icon"><a href="/departments"><i class="icofont-doctor-alt"></i></a></div>
+          <h4 class="title"><a href="/departments">Departments</a></h4>
+          <p class="description">Check out our departments. Our outstanding specialists will make sure to receive the best care.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-6 d-flex align-items-stretch mb-5 mb-lg-0">
+        <div class="icon-box" data-aos="fade-up" data-aos-delay="200">
+          <div class="icon"><a href="/about-us"><i class="icofont-patient-bed"></i></a></div>
+          <h4 class="title"><a href="/about-us">About Us</a></h4>
+          <p class="description">We offer more than 10 departments fully stocked with modern medical equipment.</p>
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ======= Cta Section ======= -->
+<th:block th:include="~{/fragments/make-appointment}"> </th:block>
+<!-- End Cta Section -->
+
+<footer id="footer">
+  <th:block th:include="~{/fragments/footer}"> </th:block>
+</footer><!-- End Footer -->
+
+<th:block th:include="~{/fragments/scripts}"> </th:block>
+</body>

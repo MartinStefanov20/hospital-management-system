@@ -1,0 +1,21 @@
+<th:block>
+    <div class="container d-flex align-items-center">
+
+        <a href="/home" class="logo mr-auto"><img src="/assets/img/logo.png" alt=""></a>
+
+        <nav class="nav-menu d-none d-lg-block">
+            <ul>
+                <li><a href="/appointments">Appointments</a></li>
+                <li><a href="/prescriptions">Prescriptions</a></li>
+                <li><a href="/departments">Departments</a></li>
+                <li><a href="/about-us">About Us</a></li>
+
+            </ul>
+        </nav>
+        <form method="POST" th:action="@{/users/logout}">
+            <button class="logout-button">Log out</button>
+        </form>
+
+
+    </div>
+</th:block>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="~{/fragments/head}"></th:block>
+</head>
+
+<body>
+
+<header id="header" class="fixed-top">
+    <th:block th:include="~{/fragments/user-nav}"></th:block>
+</header><!-- End Header -->
+
+<!-- ======= Featured Services Section ======= -->
+<div class="move"></div>
+<section id="featured-services" class="featured-services">
+    <div class="container" data-aos="fade-up">
+
+
+        <div class="section-title">
+            <div class="move-options"></div>
+
+            <h2>Appointment Statuses information</h2>
+        </div>
+        <ul>
+            <li>
+                <div class="row" th:each="i : ${statuses}" th:object="${i}">
+                    <div class="col-md-4 col-lg-12 d-flex align-items-stretch mb-5 mb-lg-0">
+                        <div class="icon-box col-lg-12" data-aos="fade-up" data-aos-delay="100">
+                            <div class="col-md-4 col-lg-12 d-flex align-items-stretch mb-5 mb-lg-0">
+                                <a th:text=" *{getName()} + ' - ' + *{getStatusDescription()}">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="move-options"></div>
+                <form method="GET" th:action="@{/appointments}">
+                    <button class="logout-button">Back to Appointments</button>
+                </form>
+            </li>
+        </ul>
+
+
+    </div>
+</section><!-- End Featured Services Section -->
+
+<!-- ======= Cta Section ======= -->
+<th:block th:include="~{/fragments/make-appointment}"></th:block>
+<!-- End Cta Section -->
+
+<footer id="footer">
+    <th:block th:include="~{/fragments/footer}"></th:block>
+</footer><!-- End Footer -->
+
+<th:block th:include="~{/fragments/scripts}"></th:block>
+</body>

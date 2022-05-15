@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="~{/fragments/head}"> </th:block>
+</head>
+
+<body>
+<header id="header" class="fixed-top">
+    <th:block th:include="~{/fragments/doctors-nav}"> </th:block>
+</header><!-- End Header -->
+
+<!-- ======= Featured Services Section ======= -->
+
+<div class="move"></div>
+
+<div class="section-title">
+    <div class="move-options"></div>
+
+    <h2 th:text="*{greeting}">Your Appointments</h2>
+</div>
+<section id="featured-services" class="featured-services">
+    <div class="container" data-aos="fade-up">
+
+        <h3 class="home-welcome-message"></h3>
+
+        <div class="row">
+            <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-5 mb-lg-0">
+                <div class="icon-box" data-aos="fade-up" data-aos-delay="100">
+                    <div class="icon"><a href="/doctor/appointments/requested"><i class="icofont-calendar"></i></a></div>
+                    <h4 class="title"><a href="/doctor/appointments/requested">Requested</a></h4>
+                    <p class="description">Here you can find and manage your Requested appointments.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-5 mb-lg-0">
+                <div class="icon-box" data-aos="fade-up" data-aos-delay="100">
+                    <div class="icon"><a href="/doctor/appointments/confirmed"><i class="icofont-calendar"></i></a></div>
+                    <h4 class="title"><a href="/doctor/appointments/confirmed">Confirmed</a></h4>
+                    <p class="description">Here you can find and manage your Confirmed appointments.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-5 mb-lg-0">
+                <div class="icon-box" data-aos="fade-up" data-aos-delay="100">
+                    <div class="icon"><a href="/doctor/appointments/archived"><i class="icofont-calendar"></i></a></div>
+                    <h4 class="title"><a href="/doctor/appointments/archived">Archived</a></h4>
+                    <p class="description">Here you can find and manage your appointments.</p>
+                </div>
+            </div>
+        </div>
+        <div class="move-options"></div>
+        <form method="GET" th:action="@{/home}">
+            <button class="logout-button">Back To Homepage</button>
+        </form>
+        <div class="push-down-footer"></div>
+
+    </div>
+</section><!-- End Featured Services Section -->
+
+<footer id="footer">
+    <th:block th:include="~{/fragments/footer}"> </th:block>
+</footer><!-- End Footer -->
+
+<th:block th:include="~{/fragments/scripts}"> </th:block>
+</body>
