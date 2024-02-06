@@ -18,6 +18,7 @@ import static com.example.proekt.messages.ValidationErrorMessages.*;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "custom_user")
 public class User extends BaseEntity{
 
     @Column(nullable = false, unique = true)
