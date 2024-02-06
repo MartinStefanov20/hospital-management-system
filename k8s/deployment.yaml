@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hms-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hms-svc
+  template:
+    metadata:
+      labels:
+        app: hms-svc
+    spec:
+      containers:
+        - image: martinstefanov20/hms-martin:df9b5c2add4f4f250f12e4350aa8f898c5179002
+          name: hms-svc
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: pass123
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgresql:5432/postgres?useSSL=false
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
