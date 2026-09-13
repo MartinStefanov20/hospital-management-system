@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="~{fragments/head}"></th:block>
+    <title>Access denied - Hospital Management System</title>
+</head>
+
+<body>
+
+<header id="header" class="fixed-top">
+    <th:block th:replace="~{fragments/guest-nav-index}"></th:block>
+</header><!-- End Header -->
+
+<section id="appointment" class="appointment section-bg">
+    <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+            <div class="move"></div>
+            <h2 th:text="${status != null} ? ${status} + ' - Access denied' : 'Access denied'">Access denied</h2>
+            <p>You do not have permission to view this page. Sign in with an account that has the required role.</p>
+            <p th:if="${message != null and !#strings.isEmpty(message)}" th:text="${message}"></p>
+            <p th:if="${path != null}"><small>Requested path: <code th:text="${path}"></code></small></p>
+        </div>
+
+        <div class="text-center">
+            <form method="GET" th:action="@{/home}" style="display: inline-block">
+                <button class="logout-button" type="submit">Go to home page</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="move-footer"></div>
+</section>
+
+<footer id="footer">
+    <th:block th:replace="~{fragments/footer}"></th:block>
+</footer><!-- End Footer -->
+
+<th:block th:replace="~{fragments/scripts}"></th:block>
+</body>
+</html>

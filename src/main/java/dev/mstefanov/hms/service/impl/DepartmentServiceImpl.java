@@ -1,6 +1,6 @@
 package dev.mstefanov.hms.service.impl;
 
-import dev.mstefanov.hms.model.Department;
+import dev.mstefanov.hms.exception.NotFoundException;
 import dev.mstefanov.hms.model.service.DepartmentServiceModel;
 import dev.mstefanov.hms.model.view.DepartmentViewModel;
 import dev.mstefanov.hms.repository.DepartmentRepository;
@@ -8,7 +8,6 @@ import dev.mstefanov.hms.service.DepartmentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,25 +23,22 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public List<DepartmentViewModel> getAllDepartments() {
+        return departmentRepository.findAll().stream()
+                .map(department -> modelMapper.map(department, DepartmentViewModel.class))
+                .toList();
+    }
 
-        List<Department> departments = this.departmentRepository.findAll();
-        List<DepartmentViewModel> viewDepartments = new ArrayList<>();
-
-        for (Department department : departments) {
-            viewDepartments.add(this.modelMapper.
-                    map(department, DepartmentViewModel.class));
-        }
-
-        return viewDepartments;
+    @Override
+    public List<DepartmentServiceModel> getAllDepartmentDetails() {
+        return departmentRepository.findAll().stream()
+                .map(department -> modelMapper.map(department, DepartmentServiceModel.class))
+                .toList();
     }
 
     @Override
     public DepartmentServiceModel getDepartmentByName(String name) {
-
-        return this.modelMapper.map
-                (this.departmentRepository.findDepartmentByName(name),
-                        DepartmentServiceModel.class);
-
+        return departmentRepository.findByName(name)
+                .map(department -> modelMapper.map(department, DepartmentServiceModel.class))
+                .orElseThrow(() -> new NotFoundException("Department '" + name + "' not found"));
     }
-
 }

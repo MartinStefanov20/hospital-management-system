@@ -199,10 +199,7 @@ public class DemoDataService {
     }
 
     private Status status(String name) {
-        Status status = statusRepository.findStatusByName(name);
-        if (status == null) {
-            throw new IllegalStateException("Status " + name + " missing; has Flyway migration V2 run?");
-        }
-        return status;
+        return statusRepository.findByName(name)
+                .orElseThrow(() -> new IllegalStateException("Status " + name + " missing; has Flyway migration V2 run?"));
     }
 }

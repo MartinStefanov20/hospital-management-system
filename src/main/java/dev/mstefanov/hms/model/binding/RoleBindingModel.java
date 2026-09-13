@@ -1,13 +1,12 @@
 package dev.mstefanov.hms.model.binding;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.validation.constraints.NotNull;
-
-import static dev.mstefanov.hms.messages.ValidationErrorMessages.*;
+import static dev.mstefanov.hms.messages.ValidationErrorMessages.MISSING_USERNAME;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,8 +14,9 @@ import static dev.mstefanov.hms.messages.ValidationErrorMessages.*;
 @Setter
 public class RoleBindingModel {
 
-    @NotNull(message = MISSING_USERNAME)
+    @NotBlank(message = MISSING_USERNAME)
     private String username;
+
     private boolean patient;
     private boolean doctor;
     private boolean admin;

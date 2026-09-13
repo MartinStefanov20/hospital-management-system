@@ -1,5 +1,7 @@
 package dev.mstefanov.hms.service.impl;
 
+import dev.mstefanov.hms.exception.ConflictException;
+import dev.mstefanov.hms.exception.NotFoundException;
 import dev.mstefanov.hms.model.Appointment;
 import dev.mstefanov.hms.model.service.AppointmentServiceModel;
 import dev.mstefanov.hms.repository.AppointmentRepository;
@@ -11,19 +13,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
+
+    static final String REQUESTED = "REQUESTED";
+    static final String CONFIRMED = "CONFIRMED";
+    static final String ARCHIVED = "ARCHIVED";
 
     private final AppointmentRepository appointmentRepository;
     private final UserService userService;
     private final StatusService statusService;
     private final ModelMapper modelMapper;
 
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, UserService userService, StatusService statusService, ModelMapper modelMapper) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, UserService userService,
+                                  StatusService statusService, ModelMapper modelMapper) {
         this.appointmentRepository = appointmentRepository;
         this.userService = userService;
         this.statusService = statusService;
@@ -32,100 +37,80 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentServiceModel> getAppointmentsForUserWithUsername(String patientName) {
-
-        List<AppointmentServiceModel> appointments = new ArrayList<>();
-
-        for (Appointment appointment : this.appointmentRepository.findAllByPatientUsername(patientName)) {
-            appointments.add(this.modelMapper.map(appointment, AppointmentServiceModel.class));
-        }
-
-        return appointments;
+        return map(appointmentRepository.findAllByPatientUsername(patientName));
     }
 
     @Override
-    public void createAppointmentRequest(String doctorUsername, String patientName) {
+    public List<AppointmentServiceModel> getAppointmentsForDoctor(String doctorUsername) {
+        return map(appointmentRepository.findAllByDoctorUsername(doctorUsername));
+    }
 
+    @Override
+    public List<AppointmentServiceModel> getAllAppointments() {
+        return map(appointmentRepository.findAll());
+    }
+
+    @Override
+    @Transactional
+    public AppointmentServiceModel createAppointmentRequest(String doctorUsername, String patientName) {
         Appointment appointment = new Appointment(
-                this.userService.getUserByUsername(doctorUsername), this.userService.getUserByUsername(patientName),
-                null, this.statusService.getRequestedStatus());
-
-        this.appointmentRepository.save(appointment);
-
+                userService.getUserByUsername(doctorUsername),
+                userService.getUserByUsername(patientName),
+                null,
+                statusService.getRequestedStatus());
+        return map(appointmentRepository.save(appointment));
     }
 
     @Override
     public List<AppointmentServiceModel> getAllRequestedAppointmentsByDoctor(String username) {
-
-        List<AppointmentServiceModel> requestedAppointments = new ArrayList<>();
-
-        for (Appointment appointment : this.appointmentRepository.findAllByDoctorUsernameAndStatusName(username, "REQUESTED")) {
-            requestedAppointments.add(this.modelMapper.map(appointment, AppointmentServiceModel.class));
-        }
-
-        return requestedAppointments;
+        return map(appointmentRepository.findAllByDoctorUsernameAndStatusName(username, REQUESTED));
     }
 
     @Override
     public List<AppointmentServiceModel> getAllConfirmedAppointmentsByDoctor(String username) {
-
-        List<AppointmentServiceModel> requestedAppointments = new ArrayList<>();
-
-        for (Appointment appointment : this.appointmentRepository.findAllByDoctorUsernameAndStatusName(username, "CONFIRMED")) {
-            requestedAppointments.add(this.modelMapper.map(appointment, AppointmentServiceModel.class));
-        }
-
-        return requestedAppointments;
+        return map(appointmentRepository.findAllByDoctorUsernameAndStatusName(username, CONFIRMED));
     }
 
     @Override
     public List<AppointmentServiceModel> getAllArchivedAppointmentsByDoctor(String username) {
+        return map(appointmentRepository.findAllByDoctorUsernameAndStatusName(username, ARCHIVED));
+    }
 
-        List<AppointmentServiceModel> requestedAppointments = new ArrayList<>();
-
-        for (Appointment appointment : this.appointmentRepository.findAllByDoctorUsernameAndStatusName(username, "ARCHIVED")) {
-            requestedAppointments.add(this.modelMapper.map(appointment, AppointmentServiceModel.class));
+    @Override
+    @Transactional
+    public AppointmentServiceModel confirmAppointment(Long id, LocalDateTime appointmentTime) {
+        Appointment appointment = getAppointmentById(id);
+        if (!REQUESTED.equals(appointment.getStatus().getName())) {
+            throw new ConflictException("Appointment " + id + " is " + appointment.getStatus().getName()
+                    + " and can no longer be confirmed");
         }
-
-        return requestedAppointments;
+        appointment.setStatus(statusService.getConfirmedStatus());
+        appointment.setAppointmentTime(appointmentTime);
+        return map(appointmentRepository.save(appointment));
     }
 
     @Override
     @Transactional
-    public void confirmAppointment(String id, String dateAndTime) {
-
-        Long appointmentID = Long.parseLong(id);
-
-        String[] dateTokens = dateAndTime.split("T");
-        dateTokens[1] = dateTokens[1].substring(0, 5);
-        dateAndTime = dateTokens[0] + " " + dateTokens[1];
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(dateAndTime, formatter);
-
-        Appointment appointment = this.appointmentRepository.findById(appointmentID)
-                .orElseThrow(() -> new IllegalArgumentException("Appointment not found: " + appointmentID));
-        appointment.setStatus(this.statusService.getConfirmedStatus());
-        appointment.setAppointmentTime(dateTime);
-
-        this.appointmentRepository.save(appointment);
-
-    }
-
-    @Transactional
-    @Override
-    public void archiveAppointment(Long id) {
-
-        Appointment appointment = this.appointmentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Appointment not found: " + id));
-        appointment.setStatus(this.statusService.getArchivedStatus());
-        this.appointmentRepository.save(appointment);
-
+    public AppointmentServiceModel archiveAppointment(Long id) {
+        Appointment appointment = getAppointmentById(id);
+        if (!ARCHIVED.equals(appointment.getStatus().getName())) {
+            appointment.setStatus(statusService.getArchivedStatus());
+            appointment = appointmentRepository.save(appointment);
+        }
+        return map(appointment);
     }
 
     @Override
     public Appointment getAppointmentById(Long id) {
-
-        return this.appointmentRepository.findOneById(id);
-
+        return appointmentRepository.findById(id)
+                .orElseThrow(() -> NotFoundException.of("Appointment", id));
     }
 
+    private AppointmentServiceModel map(Appointment appointment) {
+        return modelMapper.map(appointment, AppointmentServiceModel.class);
+    }
+
+    private List<AppointmentServiceModel> map(List<Appointment> appointments) {
+        return appointments.stream().map(this::map).toList();
+    }
 }

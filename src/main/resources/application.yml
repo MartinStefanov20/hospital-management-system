@@ -30,9 +30,6 @@ spring:
     open-in-view: false
   flyway:
     enabled: true
-  mvc:
-    problemdetails:
-      enabled: true
 
 management:
   endpoints:

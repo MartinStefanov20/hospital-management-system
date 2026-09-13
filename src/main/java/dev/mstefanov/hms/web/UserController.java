@@ -61,42 +61,27 @@ public class UserController {
 
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute("userRegistrationBindingModel")
-                                   UserRegistrationBindingModel userRegistrationBindingModel,
+                           UserRegistrationBindingModel userRegistrationBindingModel,
                            BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-
+        if (!userRegistrationBindingModel.passwordsMatch()) {
+            redirectAttributes.addFlashAttribute("passwordsMismatch", "password mismatch");
+        }
         if (bindingResult.hasErrors()) {
-
-            redirectAttributes.addFlashAttribute("userRegistrationBindingModel", userRegistrationBindingModel);
+            redirectAttributes.addFlashAttribute("bindingIssues", "binding issues");
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userRegistrationBindingModel",
                     bindingResult);
-
-            if (!userRegistrationBindingModel.getPassword().equals(userRegistrationBindingModel.getConfirmPassword())) {
-                redirectAttributes.addFlashAttribute("passwordsMismatch", "password mismatch");
-            }
-
-            redirectAttributes.addFlashAttribute("bindingIssues", "binding issues");
-
-            return "redirect:register";
-
-        } else {
-            if (!userRegistrationBindingModel.getPassword().equals(userRegistrationBindingModel.getConfirmPassword())) {
-                redirectAttributes.addFlashAttribute("passwordsMismatch", "password mismatch");
-                redirectAttributes.addFlashAttribute("userRegistrationBindingModel", userRegistrationBindingModel);
-
-                return "redirect:register";
-            } else {
-                if (this.userService.checkIfUsernameExists(userRegistrationBindingModel.getUsername())) {
-                    redirectAttributes.addFlashAttribute("usernameIsTake", "taken username");
-                    redirectAttributes.addFlashAttribute("userRegistrationBindingModel", userRegistrationBindingModel);
-
-                    return "redirect:register";
-                }
-                this.userService.registerPatient(this.modelMapper.map(userRegistrationBindingModel, UserServiceModel.class));
-            }
         }
-
-        return "redirect:login";
-
+        if (bindingResult.hasErrors() || !userRegistrationBindingModel.passwordsMatch()) {
+            redirectAttributes.addFlashAttribute("userRegistrationBindingModel", userRegistrationBindingModel);
+            return "redirect:/users/register";
+        }
+        if (this.userService.checkIfUsernameExists(userRegistrationBindingModel.getUsername())) {
+            redirectAttributes.addFlashAttribute("usernameIsTake", "taken username");
+            redirectAttributes.addFlashAttribute("userRegistrationBindingModel", userRegistrationBindingModel);
+            return "redirect:/users/register";
+        }
+        this.userService.registerPatient(this.modelMapper.map(userRegistrationBindingModel, UserServiceModel.class));
+        return "redirect:/users/login";
     }
 
     @GetMapping("/admin/panel")

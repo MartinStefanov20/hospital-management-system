@@ -26,6 +26,10 @@
               class="login-form" data-aos="fade-up"
               data-aos-delay="100">
 
+            <div th:if="${bindingIssue}" class="center-block alert alert-danger" role="alert">
+                <p class="text-center" th:text="${bindingIssue}"></p>
+            </div>
+
             <div class="form-row">
                 <div class="col-md-4 form-group" , style="float: none; margin: 0 auto;">
                     <h6>Appointment Id</h6>

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserService {
 
-    String getGreeting (String username);
+    String getGreeting(String username);
 
     void registerPatient(UserServiceModel userServiceModel);
 
@@ -16,18 +16,19 @@ public interface UserService {
 
     List<UserServiceModel> getAllDoctors();
 
+    /** @throws dev.mstefanov.hms.exception.NotFoundException when no such user exists */
     User getUserByUsername(String username);
 
-    String getDoctorAppointmentsGreeting (String username);
+    /** @throws dev.mstefanov.hms.exception.NotFoundException when no such user exists */
+    User getUserById(Long id);
+
+    String getDoctorAppointmentsGreeting(String username);
 
     String getUserFullName(Long patientId);
-
-    User getUserById(Long patientId);
 
     List<String> getAllUsernames();
 
     List<String> getUserRoles(String username);
 
     void setUserWithNewRoles(RoleBindingModel roleBindingModel);
-
 }

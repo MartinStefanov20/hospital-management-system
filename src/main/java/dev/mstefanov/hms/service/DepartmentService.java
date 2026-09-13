@@ -9,6 +9,7 @@ public interface DepartmentService {
 
     List<DepartmentViewModel> getAllDepartments();
 
-    DepartmentServiceModel getDepartmentByName(String name);
+    List<DepartmentServiceModel> getAllDepartmentDetails();
 
+    DepartmentServiceModel getDepartmentByName(String name);
 }

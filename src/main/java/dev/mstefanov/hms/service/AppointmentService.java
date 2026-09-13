@@ -1,16 +1,20 @@
 package dev.mstefanov.hms.service;
 
-
 import dev.mstefanov.hms.model.Appointment;
 import dev.mstefanov.hms.model.service.AppointmentServiceModel;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-public interface AppointmentService{
+public interface AppointmentService {
 
     List<AppointmentServiceModel> getAppointmentsForUserWithUsername(String patientName);
 
-    void createAppointmentRequest(String doctorUsername, String patientName);
+    List<AppointmentServiceModel> getAppointmentsForDoctor(String doctorUsername);
+
+    List<AppointmentServiceModel> getAllAppointments();
+
+    AppointmentServiceModel createAppointmentRequest(String doctorUsername, String patientName);
 
     List<AppointmentServiceModel> getAllRequestedAppointmentsByDoctor(String username);
 
@@ -18,10 +22,11 @@ public interface AppointmentService{
 
     List<AppointmentServiceModel> getAllArchivedAppointmentsByDoctor(String username);
 
-    void confirmAppointment(String id, String dateAndTime);
+    /** Moves a REQUESTED appointment to CONFIRMED at the given time. */
+    AppointmentServiceModel confirmAppointment(Long id, LocalDateTime appointmentTime);
 
-    void archiveAppointment(Long id);
+    /** Moves an appointment to ARCHIVED; archiving an already archived appointment is a no-op. */
+    AppointmentServiceModel archiveAppointment(Long id);
 
     Appointment getAppointmentById(Long id);
-
 }

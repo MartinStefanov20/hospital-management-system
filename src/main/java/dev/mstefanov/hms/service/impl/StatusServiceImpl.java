@@ -7,7 +7,6 @@ import dev.mstefanov.hms.service.StatusService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,29 +21,30 @@ public class StatusServiceImpl implements StatusService {
     }
 
     @Override
-    public Status getRequestedStatus () {
-        return this.statusRepository.findStatusByName("REQUESTED");
+    public Status getRequestedStatus() {
+        return status("REQUESTED");
     }
 
     @Override
     public Status getConfirmedStatus() {
-        return this.statusRepository.findStatusByName("CONFIRMED");
+        return status("CONFIRMED");
     }
 
     @Override
     public Status getArchivedStatus() {
-        return this.statusRepository.findStatusByName("ARCHIVED");
+        return status("ARCHIVED");
     }
 
     @Override
     public List<StatusServiceModel> getAllStatuses() {
+        return statusRepository.findAll().stream()
+                .map(status -> modelMapper.map(status, StatusServiceModel.class))
+                .toList();
+    }
 
-        List <StatusServiceModel> statuses = new ArrayList<>();
-
-        for (Status status : this.statusRepository.findAll()) {
-            statuses.add(this.modelMapper.map(status, StatusServiceModel.class));
-        }
-
-        return statuses;
+    /** Statuses are reference data inserted by Flyway (V2); a missing one is a deployment error, not a 404. */
+    private Status status(String name) {
+        return statusRepository.findByName(name)
+                .orElseThrow(() -> new IllegalStateException("Status " + name + " missing; has Flyway migration V2 run?"));
     }
 }
