@@ -1,0 +1,80 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "src/**"
+      - "pom.xml"
+      - "Dockerfile"
+      - ".github/workflows/deploy-cloud-run.yml"
+
+concurrency:
+  group: deploy-cloud-run
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  REGION: europe-west3
+  SERVICE: hospital-ms
+  IMAGE: europe-west3-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/apps/hospital-ms:${{ github.sha }}
+
+jobs:
+  deploy:
+    name: Build, push and deploy
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud (Workload Identity Federation)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build image
+        run: docker build -t "${{ env.IMAGE }}" .
+
+      - name: Push image
+        run: docker push "${{ env.IMAGE }}"
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy "${{ env.SERVICE }}" \
+            --image "${{ env.IMAGE }}" \
+            --region "${{ env.REGION }}" \
+            --platform managed \
+            --allow-unauthenticated \
+            --port 8080 \
+            --memory 512Mi \
+            --cpu 1 \
+            --cpu-boost \
+            --min-instances 0 \
+            --max-instances 1 \
+            --concurrency 40 \
+            --set-env-vars SPRING_PROFILES_ACTIVE=demo,COOKIE_SECURE=true \
+            --set-secrets SPRING_DATASOURCE_URL=hospital-ms-db-url:latest,SPRING_DATASOURCE_USERNAME=hospital-ms-db-user:latest,SPRING_DATASOURCE_PASSWORD=hospital-ms-db-password:latest,DEMO_RESET_TOKEN=hospital-ms-reset-token:latest \
+            --quiet
+
+      - name: Smoke test
+        run: |
+          URL="$(gcloud run services describe "${{ env.SERVICE }}" --region "${{ env.REGION }}" --format 'value(status.url)')"
+          echo "Service URL: $URL"
+          for i in $(seq 1 12); do
+            if curl -fsS "$URL/actuator/health" > /dev/null; then
+              echo "healthy"; exit 0
+            fi
+            sleep 5
+          done
+          echo "health check failed"; exit 1
