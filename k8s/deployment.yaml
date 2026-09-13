@@ -18,9 +18,31 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: pass123
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgresql:5432/postgres?useSSL=false
+              value: jdbc:postgresql://postgresql:5432/hospital
             - name: SPRING_DATASOURCE_USERNAME
-              value: postgres
+              valueFrom:
+                secretKeyRef:
+                  name: hms-db-credentials
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hms-db-credentials
+                  key: password
+            - name: DEMO_RESET_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: hms-db-credentials
+                  key: demo-reset-token
+                  optional: true
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 20
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30

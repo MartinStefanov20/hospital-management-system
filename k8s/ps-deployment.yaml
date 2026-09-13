@@ -20,15 +20,21 @@ spec:
     spec:
       containers:
         - name: postgres-deployment
-          image: 'postgres'
+          image: 'postgres:16'
           imagePullPolicy: IfNotPresent
           env:
             - name: POSTGRES_DB
-              value: postgres
+              value: hospital
             - name: POSTGRES_USER
-              value: postgres
+              valueFrom:
+                secretKeyRef:
+                  name: hms-db-credentials
+                  key: username
             - name: POSTGRES_PASSWORD
-              value: pass123
+              valueFrom:
+                secretKeyRef:
+                  name: hms-db-credentials
+                  key: password
           ports:
             - containerPort: 5432
               name: postgresql
