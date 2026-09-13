@@ -178,3 +178,7 @@ docker run --rm -p 8090:8080 \
   -e SPRING_DATASOURCE_USERNAME=postgres -e SPRING_DATASOURCE_PASSWORD=password \
   -e DEMO_RESET_TOKEN=t hms:local
 ```
+
+## Enabling automatic deploys
+
+Add the `GCP_PROJECT`, `WIF_PROVIDER` and `WIF_SERVICE_ACCOUNT` repository secrets, then set the repository variable `CLOUD_RUN_DEPLOY=true` (Settings → Secrets and variables → Actions → Variables). Until then the deploy job is skipped.

@@ -24,9 +24,11 @@ env:
 
 jobs:
   deploy:
+    # Enable by setting the repository variable CLOUD_RUN_DEPLOY=true once the
+    # GCP_PROJECT / WIF_PROVIDER / WIF_SERVICE_ACCOUNT secrets exist.
+    if: ${{ vars.CLOUD_RUN_DEPLOY == 'true' }}
     name: Build, push and deploy
     runs-on: ubuntu-latest
-    environment: production
     steps:
       - name: Checkout
         uses: actions/checkout@v4
