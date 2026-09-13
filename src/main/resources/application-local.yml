@@ -1,0 +1,8 @@
+# Local development against the Postgres container on localhost:5433.
+# Run with: SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run
+# The demo profile is pulled in via spring.profiles.group.local in application.yml.
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/hospital}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}

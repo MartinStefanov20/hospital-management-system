@@ -2,13 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <th:block th:include="~{fragments/head}"></th:block>
+    <th:block th:replace="~{fragments/head}"></th:block>
 </head>
 
 <body>
 
 <header id="header" class="fixed-top">
-    <th:block th:include="~{fragments/doctors-nav}"></th:block>
+    <th:block th:replace="~{fragments/doctors-nav}"></th:block>
 </header><!-- End Header -->
 
 <section id="appointment" class="appointment section-bg">
@@ -25,6 +25,10 @@
         <form method="POST" th:action="@{/doctor/issuePrescription}" th:method="POST" role="form"
               class="login-form" data-aos="fade-up"
               data-aos-delay="100">
+
+            <div th:if="${bindingIssue}" class="center-block alert alert-danger" role="alert">
+                <p class="text-center" th:text="${bindingIssue}"></p>
+            </div>
 
             <div class="form-row">
                 <div class="col-md-4 form-group" , style="float: none; margin: 0 auto;">
@@ -58,8 +62,8 @@
 </section>
 
 <footer id="footer">
-    <th:block th:include="~{fragments/footer}"></th:block>
+    <th:block th:replace="~{fragments/footer}"></th:block>
 </footer><!-- End Footer -->
 
-<th:block th:include="~{fragments/scripts}"></th:block>
+<th:block th:replace="~{fragments/scripts}"></th:block>
 </body>

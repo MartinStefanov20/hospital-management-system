@@ -2,13 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <th:block th:include="~{fragments/head}"> </th:block>
+    <th:block th:replace="~{fragments/head}"> </th:block>
 </head>
 
 <body>
 
 <header id="header" class="fixed-top">
-    <th:block th:include="~{fragments/doctors-nav}"> </th:block>
+    <th:block th:replace="~{fragments/doctors-nav}"> </th:block>
 </header><!-- End Header -->
 
 
@@ -45,7 +45,7 @@
                     </div>
                 </div>
                 <div class="move-options"></div>
-                <form method="GET" th:action="@{/doctor/prescriptions/(id = *{prescribedBy.id})}">
+                <form method="GET" th:action="@{/doctor/prescriptions(id = *{prescribedBy.id})}">
                     <button class="logout-button">Back to Prescriptions</button>
                 </form>
             </li>
@@ -55,8 +55,8 @@
 </section><!-- End Featured Services Section -->
 
 <footer id="footer">
-    <th:block th:include="~{fragments/footer}"></th:block>
+    <th:block th:replace="~{fragments/footer}"></th:block>
 </footer><!-- End Footer -->
 
-<th:block th:include="~{fragments/scripts}"></th:block>
+<th:block th:replace="~{fragments/scripts}"></th:block>
 </body>

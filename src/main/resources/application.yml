@@ -1,0 +1,65 @@
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+  error:
+    include-stacktrace: never
+  servlet:
+    session:
+      cookie:
+        secure: ${COOKIE_SECURE:false}
+        same-site: lax
+
+spring:
+  application:
+    name: hospital-management-system
+  profiles:
+    group:
+      local: demo
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 0
+      idle-timeout: 120000
+      max-lifetime: 300000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+springdoc:
+  paths-to-match: /api/**
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  demo:
+    reset-token: ${DEMO_RESET_TOKEN:}
+    accounts:
+      - username: admin
+        password: admin123
+        role: ADMIN
+      - username: dr.house
+        password: doctor123
+        role: DOCTOR
+      - username: patient
+        password: patient123
+        role: PATIENT
