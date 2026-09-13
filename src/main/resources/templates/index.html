@@ -2,14 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <th:block th:include="~{fragments/head}"></th:block>
+    <th:block th:replace="~{fragments/head}"></th:block>
 </head>
 
 <body>
 
 
 <header id="header" class="fixed-top">
-    <th:block th:include="~{fragments/guest-nav-index}"></th:block>
+    <th:block th:replace="~{fragments/guest-nav-index}"></th:block>
 </header>
 
 <!-- ======= Hero Section ======= -->
@@ -21,7 +21,7 @@
         <div class="carousel-inner" role="listbox">
 
             <!-- Slide 1 -->
-            <div class="carousel-item active" style="background-image: url(assets/img/slide/slide-1.jpg)">
+            <div class="carousel-item active" style="background-image: url(/assets/img/slide/slide-1.jpg)">
                 <div class="container">
                     <h2>Welcome</h2>
                     <p>Welcome to one of the most innovative and reliable platforms that connects people to carefully
@@ -31,7 +31,7 @@
             </div>
 
             <!-- Slide 2 -->
-            <div class="carousel-item" style="background-image: url(assets/img/slide/slide-2.jpg)">
+            <div class="carousel-item" style="background-image: url(/assets/img/slide/slide-2.jpg)">
                 <div class="container">
                     <h2>Contacts</h2>
                     <p>You could reach out for medical help 24/7. Our representatives and well trained and will provide
@@ -41,7 +41,7 @@
             </div>
 
             <!-- Slide 3 -->
-            <div class="carousel-item" style="background-image: url(assets/img/slide/slide-3.jpg)">
+            <div class="carousel-item" style="background-image: url(/assets/img/slide/slide-3.jpg)">
                 <div class="container">
                     <h2>Healthcare blog</h2>
                     <p>By registering with us you receive a free access to our blog, where you will find a new article
@@ -67,8 +67,8 @@
 </section><!-- End Hero -->
 
 <footer id="footer">
-    <th:block th:include="~{fragments/footer}"></th:block>
+    <th:block th:replace="~{fragments/footer}"></th:block>
 </footer>
 
-<th:block th:include="~{fragments/scripts}"></th:block>
+<th:block th:replace="~{fragments/scripts}"></th:block>
 </body>

@@ -2,13 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <th:block th:include="~{fragments/head}"></th:block>
+    <th:block th:replace="~{fragments/head}"></th:block>
 </head>
 
 <body>
 
 <header id="header" class="fixed-top">
-    <th:block th:include="~{fragments/doctors-nav}"></th:block>
+    <th:block th:replace="~{fragments/doctors-nav}"></th:block>
 </header><!-- End Header -->
 
 <!-- ======= Featured Services Section ======= -->
@@ -28,7 +28,7 @@
                     <div class="col-md-4 col-lg-12 d-flex align-items-stretch mb-5 mb-lg-0">
                         <div class="icon-box col-lg-12" data-aos="fade-up" data-aos-delay="100">
                             <div class="col-md-4 col-lg-12 d-flex align-items-stretch mb-5 mb-lg-0">
-                                <a th:href="@{/doctor/prescription/(id = *{getId()})}" th:text="('Prescriptions id: ' +  *{getId()} + ' | Patient: ' + *{getPrescribeTo().getSalutation()}+   ' ' + *{getPrescribeTo().getFirstName()} + ' ' + *{getPrescribeTo().getLastName()})" style="color: black">Prescribed
+                                <a th:href="@{/doctor/prescription(id = *{getId()})}" th:text="('Prescriptions id: ' +  *{getId()} + ' | Patient: ' + *{getPrescribeTo().getSalutation()}+   ' ' + *{getPrescribeTo().getFirstName()} + ' ' + *{getPrescribeTo().getLastName()})" style="color: black">Prescribed
                                     by:
                                     dr. Petter Griffin |
                                     Date: 21.07.2017
@@ -52,8 +52,8 @@
 
 
 <footer id="footer">
-    <th:block th:include="~{fragments/footer}"></th:block>
+    <th:block th:replace="~{fragments/footer}"></th:block>
 </footer><!-- End Footer -->
 
-<th:block th:include="~{fragments/scripts}"></th:block>
+<th:block th:replace="~{fragments/scripts}"></th:block>
 </body>

@@ -2,13 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <th:block th:include="~{fragments/head}"> </th:block>
+    <th:block th:replace="~{fragments/head}"> </th:block>
 </head>
 
 <body>
 
 <header id="header" class="fixed-top">
-    <th:block th:include="~{fragments/admin-nav}"> </th:block>
+    <th:block th:replace="~{fragments/admin-nav}"> </th:block>
 </header><!-- End Header -->
 
 <!-- ======= Featured Services Section ======= -->
@@ -35,8 +35,8 @@
 
             <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-5 mb-lg-0">
             <div class="icon-box" data-aos="fade-up" data-aos-delay="100">
-                <div class="icon"><a href="/users/admin/admin-panel"><i class="icofont-drawing-tablet"></i></a></div>
-                <h4 class="title"><a href="/users/admin/admin-panel">Admin Panel</a></h4>
+                <div class="icon"><a href="/users/admin/panel"><i class="icofont-drawing-tablet"></i></a></div>
+                <h4 class="title"><a href="/users/admin/panel">Admin Panel</a></h4>
             </div>
         </div>
         </div>
@@ -46,8 +46,8 @@
 </section><!-- End Featured Services Section -->
 
 <footer id="footer">
-    <th:block th:include="~{fragments/footer}"> </th:block>
+    <th:block th:replace="~{fragments/footer}"> </th:block>
 </footer><!-- End Footer -->
 
-<th:block th:include="~{fragments/scripts}"> </th:block>
+<th:block th:replace="~{fragments/scripts}"> </th:block>
 </body>

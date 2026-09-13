@@ -2,13 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <th:block th:include="~{fragments/head}"> </th:block>
+    <th:block th:replace="~{fragments/head}"> </th:block>
 </head>
 
 <body>
 
 <header id="header" class="fixed-top">
-    <th:block th:include="~{fragments/user-nav}"> </th:block>
+    <th:block th:replace="~{fragments/user-nav}"> </th:block>
 </header><!-- End Header -->
 
 
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="move-options"></div>
-                <a th:href="@{/department/team/(name = *{department.name})}"> <button class="logout-button"
+                <a th:href="@{/department/team(name = *{department.name})}"> <button class="logout-button"
                         th:text="('Meet the ' + *{department.name} + ' team')">Our Team</button>
                 </a>
             </li>
@@ -44,12 +44,12 @@
 </section><!-- End Featured Services Section -->
 
 <!-- ======= Cta Section ======= -->
-<th:block th:include="~{fragments/make-appointment}"></th:block>
+<th:block th:replace="~{fragments/make-appointment}"></th:block>
 <!-- End Cta Section -->
 
 <footer id="footer">
-    <th:block th:include="~{fragments/footer}"></th:block>
+    <th:block th:replace="~{fragments/footer}"></th:block>
 </footer><!-- End Footer -->
 
-<th:block th:include="~{fragments/scripts}"></th:block>
+<th:block th:replace="~{fragments/scripts}"></th:block>
 </body>

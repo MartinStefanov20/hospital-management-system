@@ -2,13 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <th:block th:include="~{fragments/head}"> </th:block>
+    <th:block th:replace="~{fragments/head}"> </th:block>
 </head>
 
 <body>
 
 <header id="header" class="fixed-top">
-    <th:block th:include="~{fragments/user-nav}"> </th:block>
+    <th:block th:replace="~{fragments/user-nav}"> </th:block>
 </header><!-- End Header -->
 
 <!-- ======= Featured Services Section ======= -->
@@ -28,7 +28,7 @@
                 <div class="icon-box col-lg-12" data-aos="fade-up" data-aos-delay="100">
                     <div class="col-lg-12 col-md-12">
                         <div class="col-md-6 col-lg-6">
-                            <img class="img-fluid" style='float:left;width:200px;height:200px; margin-right:10px;' src="../../assets/img/doctors/doctor-1.png" />
+                            <img class="img-fluid" style='float:left;width:200px;height:200px; margin-right:10px;' src="/assets/img/doctors/doctor-1.png" />
                             <p class="text-center"><a th:text="('Dr. ' + *{firstName} + ' ' + *{lastName})"> </a></p>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
 <!--                            </div>-->
 <!--                            <div class="col-md-6 col-lg-6">-->
 <!--                                <span>-->
-<!--                                    <img src="../../assets/img/doctors/doctor-1.png" width="300" height="300">-->
+<!--                                    <img src="/assets/img/doctors/doctor-1.png" width="300" height="300">-->
 <!--                                </span>-->
 <!--                            </div>-->
 <!--                        </div>-->
@@ -60,12 +60,12 @@
 </section><!-- End Featured Services Section -->
 
 <!-- ======= Cta Section ======= -->
-<th:block th:include="~{fragments/make-appointment}"></th:block>
+<th:block th:replace="~{fragments/make-appointment}"></th:block>
 <!-- End Cta Section -->
 
 <footer id="footer">
-    <th:block th:include="~{fragments/footer}"></th:block>
+    <th:block th:replace="~{fragments/footer}"></th:block>
 </footer><!-- End Footer -->
 
-<th:block th:include="~{fragments/scripts}"></th:block>
+<th:block th:replace="~{fragments/scripts}"></th:block>
 </body>

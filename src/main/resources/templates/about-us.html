@@ -2,13 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <th:block th:include="~{fragments/head}"></th:block>
+    <th:block th:replace="~{fragments/head}"></th:block>
 </head>
 
 <body>
 
 <header id="header" class="fixed-top">
-    <th:block th:include="~{fragments/user-nav}"></th:block>
+    <th:block th:replace="~{fragments/user-nav}"></th:block>
 </header><!-- End Header -->
 
 
@@ -59,7 +59,7 @@
                 <div class="tab-content">
                     <div class="tab-pane active show" id="tab-1">
                         <h3>Products and Services</h3>
-                        <img src="assets/img/services.jpg" alt="" class="img-fluid">
+                        <img src="/assets/img/services.jpg" alt="" class="img-fluid">
                         <p>We offer a variety of healthcare services and products, which meet the highest modern medical standards.</p>
                         <br>
                         <p>
@@ -69,7 +69,7 @@
                     </div>
                     <div class="tab-pane" id="tab-2">
                         <h3>Hospital</h3>
-                        <img src="assets/img/hospital.jpg" alt="" class="img-fluid">
+                        <img src="/assets/img/hospital.jpg" alt="" class="img-fluid">
                         <p>Our hospital is equipped with the best medical equipment on the market. For the past five years we moved to our
                         new downtown location and changed more than 80% of our medical equipment. <br><p>Our emergency services cover more than 70%
                         of the local territories.</p>
@@ -77,21 +77,21 @@
                     </div>
                     <div class="tab-pane" id="tab-3">
                         <h3>Partners</h3>
-                        <img src="assets/img/partners.jpg" alt="" class="img-fluid">
+                        <img src="/assets/img/partners.jpg" alt="" class="img-fluid">
                         <p>We are very proud with our partners portfolio, which includes three ofn the top 10 best rated insurance companies.
                         Our partnerships are based on transparency and with main focus on our patients. We are confident that our partners are the best in their industries,
                         therefore we trust them with our patients.</p>
                     </div>
                     <div class="tab-pane" id="tab-4">
                         <h3>Education</h3>
-                        <img src="assets/img/education.jpg" alt="" class="img-fluid">
+                        <img src="/assets/img/education.jpg" alt="" class="img-fluid">
                         <p>Part of our mission is to teach our professionalism and medical expertise to the next generations of healthcare managers,
                         doctors and medical staff. We partner with more than 10 universities on a variety of programs that provide opportunities
                         for first professional experience at more than 15 positions within our administration and medical departments</p>
                     </div>
                     <div class="tab-pane" id="tab-5">
                         <h3>Donations</h3>
-                        <img src="assets/img/donation.jpg" alt="" class="img-fluid">
+                        <img src="/assets/img/donation.jpg" alt="" class="img-fluid">
                         <p>We have managed to develop a lot in the past ten years with the help of our generous grantors. As always, we provide a very
                             transparent communication and in case that you are considering a donation, we can assure you that you will be able to see
                             thе way of the funds and how exactly they help us to maintain the highest level of medical experience.
@@ -105,12 +105,12 @@
 </section><!-- End Departments Section -->
 
 <!-- ======= Cta Section ======= -->
-<th:block th:include="~{fragments/make-appointment}"></th:block>
+<th:block th:replace="~{fragments/make-appointment}"></th:block>
 <!-- End Cta Section -->
 
 <footer id="footer">
-    <th:block th:include="~{fragments/footer}"></th:block>
+    <th:block th:replace="~{fragments/footer}"></th:block>
 </footer><!-- End Footer -->
 
-<th:block th:include="~{fragments/scripts}"></th:block>
+<th:block th:replace="~{fragments/scripts}"></th:block>
 </body>
