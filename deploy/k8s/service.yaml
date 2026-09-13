@@ -1,12 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: hms-service
+  name: hms
+  labels:
+    app: hms
 spec:
-  selector:
-    app: hms-svc
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
   type: NodePort
+  selector:
+    app: hms
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http

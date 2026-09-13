@@ -1,48 +1,72 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hms-svc
+  name: hms
+  labels:
+    app: hms
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hms-svc
+      app: hms
   template:
     metadata:
       labels:
-        app: hms-svc
+        app: hms
     spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
-        - image: martinstefanov20/hms-martin:df9b5c2add4f4f250f12e4350aa8f898c5179002
-          name: hms-svc
+        - name: hms
+          # Image built by .github/workflows/ci.yml (docker build) / deploy-cloud-run.yml.
+          # Alternatively use the Artifact Registry path:
+          #   europe-west3-docker.pkg.dev/<GCP_PROJECT>/apps/hospital-ms:<git-sha>
+          image: ghcr.io/martinstefanov20/hospital-management-system:latest
+          imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
           env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: demo
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://postgresql:5432/hospital
-            - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: hms-db-credentials
-                  key: username
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: hms-db-credentials
-                  key: password
-            - name: DEMO_RESET_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: hms-db-credentials
-                  key: demo-reset-token
-                  optional: true
+          envFrom:
+            # keys: SPRING_DATASOURCE_USERNAME, SPRING_DATASOURCE_PASSWORD, DEMO_RESET_TOKEN (see secret.example.yaml)
+            - secretRef:
+                name: hms-db-credentials
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 5
+            failureThreshold: 24
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
-              port: 8080
-            initialDelaySeconds: 20
+              port: http
+            periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
-              port: 8080
-            initialDelaySeconds: 30
+              port: http
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

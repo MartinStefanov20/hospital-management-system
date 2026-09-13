@@ -1,15 +1,16 @@
+# hostPath volume for kind / minikube only.
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: postgres-volume
   labels:
     type: local
-    app: postgres
+    app: postgresql
 spec:
   storageClassName: manual
   capacity:
     storage: 1Gi
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   hostPath:
     path: /data/postgresql

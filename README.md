@@ -1,30 +1,172 @@
-# hospital-management-system
+# Hospital Management System
 
-Hospital Management System — Spring Boot 3.5 / Java 21, Thymeleaf, Spring Security, Spring Data JPA, Flyway, PostgreSQL.
+[![CI](https://github.com/MartinStefanov20/hospital-management-system/actions/workflows/ci.yml/badge.svg)](https://github.com/MartinStefanov20/hospital-management-system/actions/workflows/ci.yml)
+![Java 21](https://img.shields.io/badge/Java-21-blue)
+![Spring Boot 3.5](https://img.shields.io/badge/Spring%20Boot-3.5-6DB33F)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+A small but complete hospital workflow app: patients request appointments with doctors, doctors confirm
+them, see their schedule and issue prescriptions, and admins manage user roles. Originally a university
+project on Spring Boot 2.6 / Java 11, it was modernised end-to-end into a production-shaped service:
+Spring Boot 3.5 on Java 21, Flyway-managed schema, a documented REST API next to the Thymeleaf UI,
+a real test suite on Testcontainers, a hardened non-root container and a CI/CD pipeline that deploys to
+Cloud Run.
+
+**Live demo:** _coming soon_
+
+| Username   | Password     | Role    | What you can do                                              |
+|------------|--------------|---------|--------------------------------------------------------------|
+| `patient`  | `patient123` | PATIENT | request appointments, read your prescriptions, browse departments |
+| `dr.house` | `doctor123`  | DOCTOR  | confirm / archive appointments, issue and edit prescriptions |
+| `admin`    | `admin123`   | ADMIN   | everything above plus the role manager                       |
+
+The demo database is reset every night at 03:00 (Europe/Berlin), so feel free to click around.
+
+## 60-second tour
+
+1. **Patient** – sign in as `patient`, open *Appointments -> Make appointment*, pick *Dr. House* and submit.
+   The appointment appears with status `REQUESTED` ("TO BE CONFIRMED").
+2. **Doctor** – sign in as `dr.house`, open *Appointments -> Requested*, confirm the request with a date
+   and time. It moves to *Confirmed*.
+3. **Prescription** – from *Confirmed*, click *Issue prescription*, write the notes and save. The
+   appointment is archived and the patient now sees the prescription under *Prescriptions*.
+4. **Admin** – sign in as `admin`, open *Role manager*, pick a user and change their roles. Their active
+   sessions are expired immediately.
+5. **API** – open [`/swagger-ui.html`](http://localhost:8080/swagger-ui.html), click *Authorize*, enter
+   `patient / patient123` and call `GET /api/v1/appointments`.
+
+## Features
+
+- Role-based UI (Thymeleaf + Spring Security 6) for patients, doctors and admins with server-side
+  Bean Validation on every form and branded 404 / 403 / 500 pages.
+- Appointment lifecycle `REQUESTED -> CONFIRMED -> ARCHIVED`, prescriptions linked to appointments,
+  departments with their doctors.
+- REST API under `/api/v1` (HTTP Basic, stateless) with role-aware listings, RFC 7807 `ProblemDetail`
+  errors (400 with field list, 401, 403, 404, 409) and an OpenAPI 3 document + Swagger UI.
+- Schema owned by Flyway (`V1` baseline, `V2` reference data, `V3` column widening); Hibernate runs
+  with `ddl-auto=validate`, and an integration test fails the build if entities and schema drift.
+- Demo profile that seeds deterministic sample data and a token-protected reset endpoint for the
+  nightly Cloud Scheduler job.
+- Actuator health with liveness/readiness groups; all secrets via environment variables.
+
+## What was modernised
+
+| Area           | Before                                        | After                                                                  |
+|----------------|-----------------------------------------------|------------------------------------------------------------------------|
+| Platform       | Spring Boot 2.6.7, Java 11                    | Spring Boot 3.5.16, Java 21 (records, switch expressions, `toList()`)  |
+| APIs           | `javax.*`                                     | `jakarta.*`                                                            |
+| Security       | `WebSecurityConfigurerAdapter`                | Two `SecurityFilterChain`s (form login UI, stateless Basic for `/api`), `@EnableMethodSecurity` |
+| Schema         | `ddl-auto=update`, statuses seeded at startup | Flyway migrations + `ddl-auto=validate`                                |
+| Validation     | Constraints declared, not enforced            | `@Valid` + `BindingResult` on every form, aligned with entity constraints |
+| Errors         | Whitelabel / JSON leaks                       | HTML error pages for views, `ProblemDetail` for the API                 |
+| REST API       | none                                          | `/api/v1` with OpenAPI docs and Swagger UI                              |
+| Tests          | none (deleted from the original repo)         | 46 tests: Mockito units, MockMvc slices, Testcontainers ITs; one `./mvnw verify` |
+| Configuration  | Hard-coded credentials in `application.properties` | Env vars / Secret Manager, `.env` for Compose, k8s Secret         |
+| Container      | `openjdk:11`, root, fat jar                   | Multi-stage build, layered `eclipse-temurin:21-jre-alpine`, non-root    |
+| Delivery       | Push to DockerHub on every commit             | CI (verify + image build) on every push/PR; Cloud Run deploy from `master` |
+| Kubernetes     | Pinned image tag, plain env                   | Kustomize, `envFrom` Secret, probes, resource limits, `runAsNonRoot`     |
+
+## Architecture
+
+```mermaid
+flowchart LR
+    B[Browser / API client] -->|HTTPS| CR[Cloud Run<br/>hospital-ms<br/>0..1 instances]
+    CR -->|JDBC + TLS| N[(Neon PostgreSQL)]
+    S[Cloud Scheduler<br/>0 3 * * *] -->|POST /internal/demo/reset<br/>X-Reset-Token| CR
+    GH[GitHub Actions] -->|WIF, push image| AR[Artifact Registry]
+    AR -->|deploy| CR
+    SM[Secret Manager] -.->|DB URL / user / password / token| CR
+```
+
+Inside the service: Thymeleaf controllers (`web/`) and REST controllers (`api/v1`) share the same
+service layer (`service/`), Spring Data JPA repositories and Flyway-managed PostgreSQL schema.
+The `demo/` package is profile-gated and owns seeding and the reset endpoint.
+
+## API
+
+Swagger UI: `/swagger-ui.html` - OpenAPI JSON: `/v3/api-docs`. All endpoints require HTTP Basic.
+
+| Method | Path                                | Who      | Purpose                                             |
+|--------|-------------------------------------|----------|-----------------------------------------------------|
+| GET    | `/api/v1/appointments`              | any      | patient: own, doctor: assigned to me, admin: all    |
+| POST   | `/api/v1/appointments`              | PATIENT  | `{ "doctorUsername": "dr.house" }` -> 201           |
+| POST   | `/api/v1/appointments/{id}/confirm` | DOCTOR   | `{ "appointmentTime": "2026-10-01T10:30:00" }`      |
+| POST   | `/api/v1/appointments/{id}/archive` | DOCTOR   | idempotent                                          |
+| GET    | `/api/v1/departments`               | any      | all departments with doctors                        |
+| GET    | `/api/v1/departments/{name}`        | any      | 404 `ProblemDetail` when unknown                    |
+| GET    | `/api/v1/prescriptions`             | any      | role-aware like appointments                        |
+| POST   | `/api/v1/prescriptions`             | DOCTOR   | `{ "patientId", "appointmentId"?, "notes" }` -> 201 |
+
+```bash
+curl -u patient:patient123 https://<host>/api/v1/appointments
+curl -u patient:patient123 -H 'Content-Type: application/json' \
+     -d '{"doctorUsername":"dr.house"}' https://<host>/api/v1/appointments
+```
 
 ## Run locally
 
-Requires Java 21 and a PostgreSQL database (the `local` profile expects `jdbc:postgresql://localhost:5433/hospital`,
-user `postgres`; override with `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`).
+Prerequisites: Java 21, Docker.
+
+**Docker Compose** (application + PostgreSQL 16):
 
 ```bash
-SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run
+cp .env.example .env          # set POSTGRES_PASSWORD
+docker compose up --build     # http://localhost:8080
 ```
 
-Flyway creates the schema (`src/main/resources/db/migration`) on first start. The `local` profile also activates
-the `demo` profile, which seeds sample data when the database has no users:
+**Maven against your own PostgreSQL** (the `local` profile expects `localhost:5433/hospital`,
+user `postgres` / `password`, and activates the `demo` profile):
 
-| Username   | Password     | Role    |
-|------------|--------------|---------|
-| `admin`    | `admin123`   | ADMIN   |
-| `dr.house` | `doctor123`  | DOCTOR  |
-| `patient`  | `patient123` | PATIENT |
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+```
 
-Set `DEMO_RESET_TOKEN` to enable `POST /internal/demo/reset` (header `X-Reset-Token`), which wipes and re-seeds the
-demo data. Health: `GET /actuator/health`.
+Override the datasource with `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`,
+`SPRING_DATASOURCE_PASSWORD`; set `DEMO_RESET_TOKEN` to enable `POST /internal/demo/reset`.
 
-## Configuration
+## Tests
 
-All settings live in `src/main/resources/application.yml` and are driven by environment variables
-(`PORT`, `SPRING_DATASOURCE_*`, `COOKIE_SECURE`, `DEMO_RESET_TOKEN`). For Docker Compose copy `.env.example` to `.env`;
-for Kubernetes create the `hms-db-credentials` Secret (see `k8s/secret.example.yaml`).
+```bash
+./mvnw -B verify
+```
+
+Surefire runs the unit and MockMvc tests (`*Test`), Failsafe the Testcontainers integration tests
+(`*IT`) on `postgres:16-alpine`. Docker must be available. Colima users:
+`export DOCKER_HOST=unix://$HOME/.colima/default/docker.sock TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock`.
+
+Highlights: `HospitalManagementSystemApplicationIT` boots the full context on a fresh database, so it
+fails whenever Flyway migrations and JPA entities disagree; `SecurityRulesTest` pins the authorization
+rules of both filter chains; `AppointmentApiControllerTest` asserts the `ProblemDetail` shapes.
+
+## Deploy
+
+See [docs/DEPLOY.md](docs/DEPLOY.md) for Cloud Run + Neon (secrets, Workload Identity Federation,
+nightly reset job), the Kubernetes manifests under `deploy/`, and local container runs.
+
+## Project structure
+
+```
+src/main/java/dev/mstefanov/hms
+├── api/               ApiExceptionHandler (ProblemDetail) and v1/ REST controllers + record DTOs
+├── config/            OpenApiConfig
+├── configurations/    SecurityConfig (two filter chains), shared beans
+├── demo/              demo profile: seeding, reset endpoint, login hints
+├── exception/         NotFoundException, ConflictException
+├── model/             JPA entities, binding / service / view models
+├── repository/        Spring Data JPA repositories
+├── service/           business logic (impl/)
+└── web/               Thymeleaf controllers, GlobalExceptionHandler
+src/main/resources
+├── db/migration/      Flyway V1 baseline, V2 statuses, V3 name columns
+├── templates/         Thymeleaf views, error/ pages
+└── application*.yml   environment-driven configuration
+src/test/java          unit tests (*Test) and Testcontainers ITs (*IT)
+deploy/                kustomization.yaml + k8s/ manifests
+docs/DEPLOY.md         deployment guide
+.github/workflows      ci.yml, deploy-cloud-run.yml
+Dockerfile, compose.yaml
+```
+
+## License
+
+[MIT](LICENSE) - Copyright (c) 2026 Martin Stefanov

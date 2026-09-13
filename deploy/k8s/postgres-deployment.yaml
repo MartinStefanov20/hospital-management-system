@@ -1,9 +1,10 @@
+# PostgreSQL for local clusters (kind / minikube) only. Production uses a managed database (Neon), see docs/DEPLOY.md.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres-deployment
+  name: postgresql
   labels:
-    app: postgres-deployment
+    app: postgresql
     tier: database
 spec:
   replicas: 1
@@ -19,8 +20,8 @@ spec:
         tier: database
     spec:
       containers:
-        - name: postgres-deployment
-          image: 'postgres:16'
+        - name: postgresql
+          image: postgres:16-alpine
           imagePullPolicy: IfNotPresent
           env:
             - name: POSTGRES_DB
@@ -29,19 +30,25 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: hms-db-credentials
-                  key: username
+                  key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: hms-db-credentials
-                  key: password
+                  key: POSTGRES_PASSWORD
           ports:
-            - containerPort: 5432
-              name: postgresql
+            - name: postgresql
+              containerPort: 5432
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: postgresql-claim0
+            - name: data
+              mountPath: /var/lib/postgresql/data
       volumes:
-        - name: postgresql-claim0
+        - name: data
           persistentVolumeClaim:
             claimName: postgres-volume-claim
