@@ -35,6 +35,15 @@ The demo database is reset every night at 03:00 (Europe/Berlin), so feel free to
 5. **API** – open [`/swagger-ui.html`](http://localhost:8080/swagger-ui.html), click *Authorize*, enter
    `patient / patient123` and call `GET /api/v1/appointments`.
 
+## Screenshots
+
+| | |
+|---|---|
+| **Login** — demo accounts for each role shown on the page | **Swagger UI** — the `/api/v1` REST API, HTTP Basic |
+| ![Login](docs/media/hms-02-login.jpg) | ![Swagger UI](docs/media/hms-06-swagger.jpg) |
+| **Home** | |
+| ![Home](docs/media/hms-01-home.jpg) | |
+
 ## Features
 
 - Role-based UI (Thymeleaf + Spring Security 6) for patients, doctors and admins with server-side
