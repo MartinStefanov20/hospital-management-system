@@ -30,6 +30,9 @@
                     <p class="text-center">Incorrect username or password</p>
                 </div>
 
+                <div th:if="${param.expired != null}" class="center-block alert alert-warning" role="alert">
+                    <p class="text-center">Your session expired before you signed in. Please try again.</p>
+                </div>
                 <div th:if="${demoAccounts != null and !demoAccounts.isEmpty()}" class="center-block alert alert-info" role="alert">
                     <p class="text-center"><strong>Demo accounts</strong></p>
                     <p class="text-center" th:each="account : ${demoAccounts}"

@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
+import org.springframework.security.web.csrf.CsrfException;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -78,7 +81,7 @@ public class SecurityConfig {
                                 "/departments/**", "/department/**",
                                 "/doctors/**").hasAnyRole("PATIENT", "ADMIN")
                         .anyRequest().authenticated())
-                .exceptionHandling(ex -> ex.accessDeniedPage("/access-denied"))
+                .exceptionHandling(ex -> ex.accessDeniedHandler(webAccessDeniedHandler()))
                 .formLogin(form -> form
                         .loginPage("/users/login")
                         .loginProcessingUrl("/users/login")
@@ -91,5 +94,22 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID"));
 
         return http.build();
+    }
+
+    /**
+     * A stale or missing CSRF token almost always means the login form sat open until the session
+     * expired (or the demo instance restarted). Send those users back to the login page with a hint
+     * instead of a bare 403; real authorization failures still get the access-denied page.
+     */
+    private AccessDeniedHandler webAccessDeniedHandler() {
+        AccessDeniedHandlerImpl forbidden = new AccessDeniedHandlerImpl();
+        forbidden.setErrorPage("/access-denied");
+        return (request, response, denied) -> {
+            if (denied instanceof CsrfException) {
+                response.sendRedirect(request.getContextPath() + "/users/login?expired");
+                return;
+            }
+            forbidden.handle(request, response, denied);
+        };
     }
 }
