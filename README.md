@@ -5,12 +5,12 @@
 ![Spring Boot 3.5](https://img.shields.io/badge/Spring%20Boot-3.5-6DB33F)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A small but complete hospital workflow app: patients request appointments with doctors, doctors confirm
-them, see their schedule and issue prescriptions, and admins manage user roles. Originally a university
-project on Spring Boot 2.6 / Java 11, it was modernised end-to-end into a production-shaped service:
-Spring Boot 3.5 on Java 21, Flyway-managed schema, a documented REST API next to the Thymeleaf UI,
-a real test suite on Testcontainers, a hardened non-root container and a CI/CD pipeline that deploys to
-Cloud Run.
+A web application for running a clinic's day-to-day. Patients register and request appointments with
+a doctor in a department, doctors confirm or archive appointments and issue prescriptions, and
+administrators manage users and roles. Built with Java 21 and Spring Boot 3: Spring Security with
+role-based access, JPA with a Flyway-managed PostgreSQL schema, Thymeleaf views, and a documented REST
+API (Swagger UI). Tested with JUnit 5 and Testcontainers, packaged as a non-root Docker image, deployed
+on Google Cloud Run through GitHub Actions.
 
 **Live demo:** _coming soon_
 
@@ -57,23 +57,6 @@ The demo database is reset every night at 03:00 (Europe/Berlin), so feel free to
 - Demo profile that seeds deterministic sample data and a token-protected reset endpoint for the
   nightly Cloud Scheduler job.
 - Actuator health with liveness/readiness groups; all secrets via environment variables.
-
-## What was modernised
-
-| Area           | Before                                        | After                                                                  |
-|----------------|-----------------------------------------------|------------------------------------------------------------------------|
-| Platform       | Spring Boot 2.6.7, Java 11                    | Spring Boot 3.5.16, Java 21 (records, switch expressions, `toList()`)  |
-| APIs           | `javax.*`                                     | `jakarta.*`                                                            |
-| Security       | `WebSecurityConfigurerAdapter`                | Two `SecurityFilterChain`s (form login UI, stateless Basic for `/api`), `@EnableMethodSecurity` |
-| Schema         | `ddl-auto=update`, statuses seeded at startup | Flyway migrations + `ddl-auto=validate`                                |
-| Validation     | Constraints declared, not enforced            | `@Valid` + `BindingResult` on every form, aligned with entity constraints |
-| Errors         | Whitelabel / JSON leaks                       | HTML error pages for views, `ProblemDetail` for the API                 |
-| REST API       | none                                          | `/api/v1` with OpenAPI docs and Swagger UI                              |
-| Tests          | none (deleted from the original repo)         | 46 tests: Mockito units, MockMvc slices, Testcontainers ITs; one `./mvnw verify` |
-| Configuration  | Hard-coded credentials in `application.properties` | Env vars / Secret Manager, `.env` for Compose, k8s Secret         |
-| Container      | `openjdk:11`, root, fat jar                   | Multi-stage build, layered `eclipse-temurin:21-jre-alpine`, non-root    |
-| Delivery       | Push to DockerHub on every commit             | CI (verify + image build) on every push/PR; Cloud Run deploy from `master` |
-| Kubernetes     | Pinned image tag, plain env                   | Kustomize, `envFrom` Secret, probes, resource limits, `runAsNonRoot`     |
 
 ## Architecture
 
