@@ -43,8 +43,8 @@ The demo database is reset every night at 03:00 (Europe/Berlin), so feel free to
 | ![Login](docs/media/hms-02-login.jpg) | ![Patient home](docs/media/hms-03-patient-home.jpg) |
 | **Patient appointments** — requested, confirmed and archived | **Departments** |
 | ![Appointments](docs/media/hms-04-patient-appointments.jpg) | ![Departments](docs/media/hms-05-departments.jpg) |
-| **Doctor home** | **Doctor appointments** — requested, confirmed, archived |
-| ![Doctor home](docs/media/hms-07-doctor-home.jpg) | ![Doctor appointments](docs/media/hms-08-doctor-appointments.jpg) |
+| **Doctor appointments** — requested, confirmed, archived | **Requested appointment** — confirm with a date and time |
+| ![Doctor appointments](docs/media/hms-08-doctor-appointments.jpg) | ![Requested appointments](docs/media/hms-09-doctor-requested.jpg) |
 | **Swagger UI** — the `/api/v1` REST API, HTTP Basic | **Home** |
 | ![Swagger UI](docs/media/hms-06-swagger.jpg) | ![Home](docs/media/hms-01-home.jpg) |
 
