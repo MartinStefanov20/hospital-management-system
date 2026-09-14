@@ -39,10 +39,12 @@ The demo database is reset every night at 03:00 (Europe/Berlin), so feel free to
 
 | | |
 |---|---|
-| **Login** — demo accounts for each role shown on the page | **Swagger UI** — the `/api/v1` REST API, HTTP Basic |
-| ![Login](docs/media/hms-02-login.jpg) | ![Swagger UI](docs/media/hms-06-swagger.jpg) |
-| **Home** | |
-| ![Home](docs/media/hms-01-home.jpg) | |
+| **Login** — demo accounts for each role shown on the page | **Patient home** |
+| ![Login](docs/media/hms-02-login.jpg) | ![Patient home](docs/media/hms-03-patient-home.jpg) |
+| **Patient appointments** — requested, confirmed and archived | **Departments** |
+| ![Appointments](docs/media/hms-04-patient-appointments.jpg) | ![Departments](docs/media/hms-05-departments.jpg) |
+| **Swagger UI** — the `/api/v1` REST API, HTTP Basic | **Home** |
+| ![Swagger UI](docs/media/hms-06-swagger.jpg) | ![Home](docs/media/hms-01-home.jpg) |
 
 ## Features
 
